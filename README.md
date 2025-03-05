@@ -9,6 +9,8 @@ We demonstrate an image dequantizing diffusion model that enables novel edits on
 
 Presented at *WACV 2025* [*Link to paper*](https://openaccess.thecvf.com/content/WACV2025/html/Vavilala_Dequantization_and_Color_Transfer_with_Diffusion_Models_WACV_2025_paper.html)
 
+[*Video Summary*](https://youtu.be/VDswgoQQx-Y?si=lHp8dXyww4oTlQx5)
+
 ## Building an Environment
 - Please consult [*DeepFloyd IF*](https://github.com/deep-floyd/IF), from which this code heavily borrows.
 
