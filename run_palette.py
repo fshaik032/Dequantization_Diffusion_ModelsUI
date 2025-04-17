@@ -33,8 +33,8 @@ p.add('--dynamic_thresholding_p', required=False, default=0.95,
       type=float, help='dynamic thresholding p')
 p.add('--dynamic_thresholding_c', required=False, default=1.0,
       type=float, help='dynamic thresholding c')
-p.add('--effective_batch_size', required=False,
-      default=12, type=int, help='training batch size')
+p.add('--batch_size', required=False,
+      default=8, type=int, help='training batch size')
 p.add('--model_load_path', required=False, default=None,
       help='pretrained model, None means train from scratch.')
 p.add('--data_mode', required=False, default='G',
@@ -118,7 +118,7 @@ with open(os.path.join(log_path_base, 'commandline_args.txt'), 'w') as f:
     json.dump(configs.__dict__, f, indent=2)
 
 text_prompts = torch.from_numpy(np.load('empty_prompt_1_77_4096.npz', allow_pickle=True)[
-                                'arr']).to('cuda:0').repeat(configs.effective_batch_size, 1, 1)
+                                'arr']).to('cuda:0').repeat(configs.batch_size, 1, 1)
 
 mpath = 'IF-II-M-v1.0' #small version of DeepFloyd
 model_kwargs = {'doCN': configs.doCN, 'aux_ch': configs.aux_channels + (8 - configs.aux_channels % 8) % 8 if configs.force_aux_8 else configs.aux_channels, 'attention_resolutions': '32,16'}
@@ -139,7 +139,7 @@ _setDtype(stage_2)
 
 if configs.force_aux_8:
     zeros_tensor = torch.zeros(
-        (configs.effective_batch_size, 8-(configs.aux_channels % 8), configs.training_res, configs.training_res)).to("cuda").type(stage_2.model.dtype)
+        (configs.batch_size, 8-(configs.aux_channels % 8), configs.training_res, configs.training_res)).to("cuda").type(stage_2.model.dtype)
 
 for name, p in stage_2.model.named_parameters():
     p.requires_grad = False
@@ -554,7 +554,7 @@ def worker_init_fn(worker_id):
     np.random.seed(worker_seed)
 
 train_dataset = MyDataset(paths=paths, mode=configs.data_mode, stage='train')
-train_loader = create_dataloader(train_dataset, batch_size=configs.effective_batch_size, num_workers=8, seed=50)
+train_loader = create_dataloader(train_dataset, batch_size=configs.batch_size, num_workers=8, seed=50)
 
 # TODO: consider pure BF16 train/inference, using torch.compile, 8-bit Adam, switch from memory-efficient attention to Flash Attn. 
 opt = torch.optim.AdamW(params, lr=float(configs.lr))

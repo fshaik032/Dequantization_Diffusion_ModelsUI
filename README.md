@@ -13,7 +13,20 @@ Presented at *WACV 2025* [*Link to paper*](https://openaccess.thecvf.com/content
 
 ## Building an Environment
 - Please consult [*DeepFloyd IF*](https://github.com/deep-floyd/IF), from which this code heavily borrows.
-
+- We were able to build a working environment as follows:
+```shell
+conda create -n palette python=3.11 -y
+conda activate palette
+pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu124
+pip install tqdm numpy omegaconf matplotlib Pillow huggingface_hub transformers accelerate diffusers tokenizers sentencepiece ftfy beautifulsoup4
+pip install git+https://github.com/openai/CLIP.git --no-deps
+pip install configargparse piq opencv-python scikit-image
+```
+- If training from scratch, you'll want to download the base diffusion model first:
+```shell
+from huggingface_hub import snapshot_download
+snapshot_download("deepfloyd/IF-II-M-v1.0")
+```
 
 ## Training and Inference
 - Toggle between different conditioning by setting the `--data_mode` flag. `T` for thresholded gradient, `L` for luminance, `G` for gradient conditioning.

@@ -32,6 +32,10 @@ class MyDataset(Dataset):
         :param stage: 'train', 'val', or 'test'
         """
         self.paths = glob.glob(paths)
+        if len(self.paths) == 0:
+            print(f"Error: No files found matching pattern: {paths}")
+            import sys
+            sys.exit(1)
         self.config = Config()
         self.mode = mode
         self.stage = stage
