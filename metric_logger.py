@@ -36,7 +36,7 @@ class MetricLogger:
     def getEpochInfo(self):
         return {
             key: {
-                "average": np.mean(values),
-                "std_err": np.std(values)/np.sqrt(len(values))
+                "average": float(np.mean(values)),
+                "std_err": float(np.std(values)/np.sqrt(len(values)))
             } for key, values in self.metrics.items()
         }
